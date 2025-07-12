@@ -1,0 +1,49 @@
+{
+  "name": "Payment System Attack",
+  "description": "Attack tree for Pampered Pets payment system compromise",
+  "root": {
+    "id": "root",
+    "name": "Compromise Payment System",
+    "type": "OR",
+    "children": [
+      {
+        "id": "pos_attack",
+        "name": "POS System Attack",
+        "type": "OR",
+        "children": [
+          {
+            "id": "malware",
+            "name": "Install Malware",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "physical_access",
+            "name": "Physical Access to POS",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "id": "network_attack",
+        "name": "Network Attack",
+        "type": "OR",
+        "children": [
+          {
+            "id": "wifi_intercept",
+            "name": "Intercept WiFi",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "credential_theft",
+            "name": "Steal Credentials",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      }
+    ]
+  }
+}
