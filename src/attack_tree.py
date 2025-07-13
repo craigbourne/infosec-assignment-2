@@ -10,11 +10,10 @@ import matplotlib.pyplot as plt
 
 class AttackTree:
     """Class to load and visualise attack trees from JSON data"""
-    
     def __init__(self):
         self.graph = nx.DiGraph()  # Directed graph for attack tree
         self.tree_data = None
-        
+
     def load_from_json(self, file_path):
         """Load attack tree from JSON file"""
         try:
@@ -28,7 +27,7 @@ class AttackTree:
         except json.JSONDecodeError:
             print(f"✗ Error: Invalid JSON in {file_path}")
             return False
-    
+
     def build_graph(self):
         """Convert JSON data to NetworkX graph"""
         if not self.tree_data:
@@ -41,7 +40,7 @@ class AttackTree:
         # Recursively add nodes and edges
         self._add_node_recursive(self.tree_data['root'], None)
         print(f"✓ Built graph with {self.graph.number_of_nodes()} nodes")
-    
+
     def _add_node_recursive(self, node, parent_id):
         """Recursively add nodes to the graph"""
         # Add current node
@@ -58,7 +57,7 @@ class AttackTree:
         if 'children' in node:
             for child in node['children']:
                 self._add_node_recursive(child, node['id'])
-    
+
     def visualise(self, show_values=True):
         """Display the attack tree with optional value display"""
         if self.graph.number_of_nodes() == 0:
@@ -66,10 +65,10 @@ class AttackTree:
             return
             
         # Create the plot
-        plt.figure(figsize=(14, 10))
+        plt.figure(figsize=(16, 12))
         
-        # Use hierarchical layout
-        pos = nx.spring_layout(self.graph, k=3, iterations=50)
+        # Use consistent layout with seed for reproducibility
+        pos = nx.spring_layout(self.graph, k=4, iterations=50, seed=42)
         
         # Draw nodes with different colours based on type
         node_colours = []
@@ -78,37 +77,47 @@ class AttackTree:
             node_type = self.graph.nodes[node_id]['type']
             if node_type == 'leaf':
                 node_colours.append('lightcoral')  # Red for leaf nodes
-                node_sizes.append(2500)  # Slightly larger for leaf nodes
+                node_sizes.append(3000)  # Larger for leaf nodes
             else:
                 node_colours.append('lightblue')   # Blue for OR/AND nodes
-                node_sizes.append(2000)
+                node_sizes.append(2500)
         
         # Draw the graph
         nx.draw(self.graph, pos, 
                 node_color=node_colours,
                 node_size=node_sizes,
-                font_size=8,
+                font_size=9,
                 font_weight='bold',
                 arrows=True,
                 edge_color='gray',
-                arrowsize=20)
+                arrowsize=25)
         
-        # Add labels with optional values
+        # Add labels with values more prominently
         labels = {}
         for node_id in self.graph.nodes():
             node_data = self.graph.nodes[node_id]
             name = node_data['name']
             
+            # Show values prominently for leaf nodes
             if show_values and node_data['type'] == 'leaf' and node_data['value'] > 0:
-                labels[node_id] = f"{name}\n£{node_data['value']:,.0f}"
+                labels[node_id] = f"{name}\n\n£{node_data['value']:,.0f}"
             else:
                 labels[node_id] = name
         
-        nx.draw_networkx_labels(self.graph, pos, labels, font_size=7)
+        nx.draw_networkx_labels(self.graph, pos, labels, font_size=8, font_weight='bold')
         
-        plt.title(self.tree_data['name'], size=16, weight='bold')
+        # Add a summary box for total risk
+        if show_values:
+            total_risk = sum(self.graph.nodes[node_id]['value'] 
+                            for node_id in self.graph.nodes() 
+                            if self.graph.nodes[node_id]['type'] == 'leaf')
+            plt.text(0.02, 0.98, f"Total Risk Exposure: £{total_risk:,.0f}", 
+                    transform=plt.gca().transAxes, fontsize=12, fontweight='bold',
+                    bbox=dict(boxstyle="round,pad=0.3", facecolor="yellow", alpha=0.8),
+                    verticalalignment='top')
+        
+        plt.title(self.tree_data['name'], size=18, weight='bold', pad=20)
         plt.axis('off')  # Hide axes
-        plt.tight_layout()
         plt.show()
 
     def update_node_value(self, node_id, value):
@@ -139,16 +148,16 @@ class AttackTree:
         if self.graph.number_of_nodes() == 0:
             print("✗ No graph loaded. Load and build a graph first.")
             return
-        
+
         print("\n" + "="*50)
         print("RISK VALUE INPUT")
         print("="*50)
         print("Enter the cost impact (in £) if each attack succeeds:")
         print("(Press Enter to skip, or enter 0 for no impact)")
         print()
-        
+
         leaf_nodes = self.get_leaf_nodes()
-        
+
         for leaf in leaf_nodes:
             while True:
                 try:
@@ -168,7 +177,7 @@ class AttackTree:
                             print("Please enter a positive number or 0")
                 except ValueError:
                     print("Please enter a valid number")
-        
+
         print("\n✓ All values updated!")
 
 # Test the class
@@ -176,14 +185,13 @@ if __name__ == "__main__":
     # Create attack tree instance
     tree = AttackTree()
     
-    # Load and display the payment system attack tree
+    # Load and build the payment system attack tree
     if tree.load_from_json('data/attack_trees/payment_system.json'):
         tree.build_graph()
-        tree.visualise(show_values=False)  # Show without values first
-        
-        # Let user input values
+
+        # Ask for input first (better user experience)
         tree.input_values_interactive()
-        
-        # Show again with values
-        print("\nDisplaying updated attack tree with values...")
+
+        # Then show the final result
+        print("\nDisplaying attack tree with risk values...")
         tree.visualise(show_values=True)
