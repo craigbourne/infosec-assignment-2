@@ -1,6 +1,5 @@
 """
 Attack Tree Loader and Visualiser
-Author: [Your Name]
 """
 
 import json
@@ -180,6 +179,91 @@ class AttackTree:
 
         print("\n✓ All values updated!")
 
+    def calculate_risk(self):
+        """Calculate overall risk assessment from leaf node values"""
+        if self.graph.number_of_nodes() == 0:
+            print("✗ No graph loaded. Load and build a graph first.")
+            return 0
+
+        # Start calculation from root node
+        root_nodes = [node for node in self.graph.nodes() 
+                    if self.graph.in_degree(node) == 0]
+
+        if not root_nodes:
+            print("✗ No root node found")
+            return 0
+
+        root_node = root_nodes[0]
+        total_risk = self._calculate_node_risk(root_node)
+
+        print(f"\n" + "="*60)
+        print(f"RISK ASSESSMENT SUMMARY")
+        print(f"="*60)
+        print(f"Total Business Risk Exposure: £{total_risk:,.2f}")
+        print(f"="*60)
+        
+        return total_risk
+
+    def _calculate_node_risk(self, node_id):
+        """Recursively calculate risk for a node and its children"""
+        node_data = self.graph.nodes[node_id]
+
+        # If it's a leaf node, return its value
+        if node_data['type'] == 'leaf':
+            return node_data['value']
+
+        # Get all child nodes
+        children = list(self.graph.successors(node_id))
+
+        if not children:
+            return 0
+
+        # Calculate risk based on node type
+        child_risks = [self._calculate_node_risk(child) for child in children]
+
+        if node_data['type'] == 'OR':
+            # OR gate: take maximum risk (worst case scenario)
+            return max(child_risks) if child_risks else 0
+        elif node_data['type'] == 'AND':
+            # AND gate: sum all risks (all must happen)
+            return sum(child_risks)
+        else:
+            # Default to OR logic
+            return max(child_risks) if child_risks else 0
+
+    def get_risk_breakdown(self):
+        """Get detailed breakdown of risk calculations"""
+        if self.graph.number_of_nodes() == 0:
+            return {}
+
+        breakdown = {}
+        leaf_nodes = self.get_leaf_nodes()
+
+        print(f"\n" + "-"*50)
+        print("DETAILED RISK BREAKDOWN")
+        print("-"*50)
+
+        total_leaf_value = 0
+        for leaf in leaf_nodes:
+            value = leaf['value']
+            total_leaf_value += value
+            breakdown[leaf['name']] = value
+            if value > 0:
+                print(f"{leaf['name']}: £{value:,.2f}")
+
+        overall_risk = self.calculate_risk()
+
+        print(f"\nSum of individual attacks: £{total_leaf_value:,.2f}")
+        print(f"Calculated overall risk: £{overall_risk:,.2f}")
+
+        if overall_risk < total_leaf_value:
+            print("(Lower overall risk due to OR-gate logic - not all attacks likely)")
+        elif overall_risk > total_leaf_value:
+            print("(Higher overall risk due to AND-gate combinations)")
+
+        return breakdown
+
+
 # Test the class
 if __name__ == "__main__":
     # Create attack tree instance
@@ -188,10 +272,14 @@ if __name__ == "__main__":
     # Load and build the payment system attack tree
     if tree.load_from_json('data/attack_trees/payment_system.json'):
         tree.build_graph()
-
-        # Ask for input first (better user experience)
+        
+        # Ask for input first
         tree.input_values_interactive()
-
-        # Then show the final result
+        
+        # Calculate and show risk assessment
+        tree.get_risk_breakdown()
+        overall_risk = tree.calculate_risk()
+        
+        # Show the final visual result
         print("\nDisplaying attack tree with risk values...")
         tree.visualise(show_values=True)
