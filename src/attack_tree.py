@@ -148,9 +148,9 @@ class AttackTree:
             print("✗ No graph loaded. Load and build a graph first.")
             return
 
-        print("\n" + "="*50)
+        print("="*60)
         print("RISK VALUE INPUT")
-        print("="*50)
+        print("="*60)
         print("Enter the cost impact (in £) if each attack succeeds:")
         print("(Press Enter to skip, or enter 0 for no impact)")
         print()
@@ -269,8 +269,28 @@ if __name__ == "__main__":
     # Create attack tree instance
     tree = AttackTree()
     
-    # Load and build the payment system attack tree
-    if tree.load_from_json('data/attack_trees/payment_system.json'):
+    # Allow user to choose which attack tree to analyse
+    print("="*60)
+    print("PAMPERED PETS ATTACK TREE ANALYSER")
+    print("="*60)
+    print("Choose an attack tree to analyse:")
+    print("1. Payment System Attack")
+    print("2. Supply Chain Attack")
+    print("="*60)
+    
+    while True:
+        choice = input("Enter choice (1 or 2): ").strip()
+        if choice == "1":
+            file_path = 'data/attack_trees/payment_system.json'
+            break
+        elif choice == "2":
+            file_path = 'data/attack_trees/supply_chain.json'
+            break
+        else:
+            print("Please enter 1 or 2")
+    
+    # Load and analyse the chosen attack tree
+    if tree.load_from_json(file_path):
         tree.build_graph()
         
         # Ask for input first
