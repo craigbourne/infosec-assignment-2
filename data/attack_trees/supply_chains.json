@@ -1,0 +1,74 @@
+{
+  "name": "Supply Chain Attack",
+  "description": "Attack tree for Pampered Pets supply chain compromise (international vs local)",
+  "root": {
+    "id": "root",
+    "name": "Compromise Supply Chain",
+    "type": "OR",
+    "children": [
+      {
+        "id": "international_risks",
+        "name": "International Supply Chain Risks",
+        "type": "OR",
+        "children": [
+          {
+            "id": "quality_loss",
+            "name": "Quality Control Loss",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "delivery_disruption",
+            "name": "Delivery Disruptions",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "regulatory_penalty",
+            "name": "Regulatory Compliance Penalties",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "id": "cyber_supply_chain",
+        "name": "Cyber Supply Chain Attack",
+        "type": "AND",
+        "children": [
+          {
+            "id": "supplier_compromise",
+            "name": "Compromise Supplier Systems",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "inject_malicious_goods",
+            "name": "Inject Malicious/Contaminated Goods",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "id": "local_supply_risks",
+        "name": "Local Supply Chain Risks",
+        "type": "OR",
+        "children": [
+          {
+            "id": "farmer_compromise",
+            "name": "Local Farm Compromise",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "transport_attack",
+            "name": "Transport Interception",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      }
+    ]
+  }
+}
