@@ -1,5 +1,7 @@
 """
 Attack Tree Loader and Visualiser
+
+Functionality for visualising and analysing attack trees. Uses graph theory to help users understand security risks.
 """
 
 import json
@@ -9,9 +11,11 @@ import matplotlib.pyplot as plt
 
 class AttackTree:
     """Class to load and visualise attack trees from JSON data"""
+    
     def __init__(self):
+        """Create empty attack tree instance."""
         self.graph = nx.DiGraph()  # Directed graph for attack tree
-        self.tree_data = None
+        self.tree_data = None      # Raw JSON data
 
     def load_from_json(self, file_path):
         """Load attack tree from JSON file"""
@@ -33,22 +37,22 @@ class AttackTree:
             print("✗ No data loaded. Call load_from_json first.")
             return
             
-        # Clear any existing graph
+        # Clear existing graph
         self.graph.clear()
         
-        # Recursively add nodes and edges
+        # Build graph from root node
         self._add_node_recursive(self.tree_data['root'], None)
         print(f"✓ Built graph with {self.graph.number_of_nodes()} nodes")
 
     def _add_node_recursive(self, node, parent_id):
-        """Recursively add nodes to the graph"""
-        # Add current node
+        """Add nodes and edges recursively."""
+        # Add current node with attributes
         self.graph.add_node(node['id'], 
                         name=node['name'], 
                         type=node['type'],
                         value=node.get('value', 0))
         
-        # Add edge from parent (if exists)
+        # Add edge from parent
         if parent_id:
             self.graph.add_edge(parent_id, node['id'])
         
@@ -58,15 +62,14 @@ class AttackTree:
                 self._add_node_recursive(child, node['id'])
 
     def visualise(self, show_values=True):
-        """Display the attack tree with optional value display"""
+        """Display attack tree as graph."""
         if self.graph.number_of_nodes() == 0:
             print("✗ No graph to display. Call build_graph first.")
             return
             
-        # Create the plot
         plt.figure(figsize=(16, 12))
         
-        # Use consistent layout with seed for reproducibility
+        # Fixed layout for consistent positioning
         pos = nx.spring_layout(self.graph, k=4, iterations=50, seed=42)
         
         # Draw nodes with different colours based on type
@@ -75,13 +78,13 @@ class AttackTree:
         for node_id in self.graph.nodes():
             node_type = self.graph.nodes[node_id]['type']
             if node_type == 'leaf':
-                node_colours.append('lightcoral')  # Red for leaf nodes
-                node_sizes.append(3000)  # Larger for leaf nodes
+                node_colours.append('lightcoral')  # Red for attacks
+                node_sizes.append(3000)
             else:
-                node_colours.append('lightblue')   # Blue for OR/AND nodes
+                node_colours.append('lightblue')   # Blue for logic gates
                 node_sizes.append(2500)
         
-        # Draw the graph
+        # Draw graph
         nx.draw(self.graph, pos, 
                 node_color=node_colours,
                 node_size=node_sizes,
@@ -91,13 +94,12 @@ class AttackTree:
                 edge_color='gray',
                 arrowsize=25)
         
-        # Add labels with values more prominently
+        # Add labels with values
         labels = {}
         for node_id in self.graph.nodes():
             node_data = self.graph.nodes[node_id]
             name = node_data['name']
             
-            # Show values prominently for leaf nodes
             if show_values and node_data['type'] == 'leaf' and node_data['value'] > 0:
                 labels[node_id] = f"{name}\n\n£{node_data['value']:,.0f}"
             else:
@@ -116,11 +118,11 @@ class AttackTree:
                     verticalalignment='top')
         
         plt.title(self.tree_data['name'], size=18, weight='bold', pad=20)
-        plt.axis('off')  # Hide axes
+        plt.axis('off')
         plt.show()
 
     def update_node_value(self, node_id, value):
-        """Update the value of a specific node"""
+        """Update risk value for specific node"""
         if node_id in self.graph.nodes():
             self.graph.nodes[node_id]['value'] = value
             print(f"✓ Updated {self.graph.nodes[node_id]['name']} = £{value:,.2f}")
@@ -143,7 +145,7 @@ class AttackTree:
         return leaf_nodes
 
     def input_values_interactive(self):
-        """Interactive method to input values for all leaf nodes"""
+        """Interactive input for risk values."""
         if self.graph.number_of_nodes() == 0:
             print("✗ No graph loaded. Load and build a graph first.")
             return
@@ -165,7 +167,6 @@ class AttackTree:
                     user_input = input(prompt).strip()
                     
                     if user_input == "":
-                        # Skip - keep current value
                         break
                     else:
                         value = float(user_input)
@@ -180,12 +181,12 @@ class AttackTree:
         print("\n✓ All values updated!")
 
     def calculate_risk(self):
-        """Calculate overall risk assessment from leaf node values"""
+        """Calculate overall risk using attack tree logic."""
         if self.graph.number_of_nodes() == 0:
             print("✗ No graph loaded. Load and build a graph first.")
             return 0
 
-        # Start calculation from root node
+        # Find root node
         root_nodes = [node for node in self.graph.nodes() 
                     if self.graph.in_degree(node) == 0]
 
@@ -205,34 +206,32 @@ class AttackTree:
         return total_risk
 
     def _calculate_node_risk(self, node_id):
-        """Recursively calculate risk for a node and its children"""
+        """Calculate risk for node using OR/AND logic."""
         node_data = self.graph.nodes[node_id]
 
-        # If it's a leaf node, return its value
+        # Leaf nodes return their value
         if node_data['type'] == 'leaf':
             return node_data['value']
 
         # Get all child nodes
         children = list(self.graph.successors(node_id))
-
         if not children:
             return 0
 
         # Calculate risk based on node type
         child_risks = [self._calculate_node_risk(child) for child in children]
 
+        # Apply gate logic
         if node_data['type'] == 'OR':
             # OR gate: take maximum risk (worst case scenario)
-            return max(child_risks) if child_risks else 0
+            return max(child_risks) if child_risks else 0  # Worst case
         elif node_data['type'] == 'AND':
-            # AND gate: sum all risks (all must happen)
-            return sum(child_risks)
+            return sum(child_risks)  # All required
         else:
-            # Default to OR logic
-            return max(child_risks) if child_risks else 0
+            return max(child_risks) if child_risks else 0  # Default OR
 
     def get_risk_breakdown(self):
-        """Get detailed breakdown of risk calculations"""
+        """Show detailed risk calculation breakdown."""
         if self.graph.number_of_nodes() == 0:
             return {}
 
@@ -264,10 +263,11 @@ class AttackTree:
         return breakdown
 
 
-# Test the class
+# Menu interface for attack tree comparison
 if __name__ == "__main__":
     # Create attack tree instance
     tree = AttackTree()
+    
     
     # Enhanced menu for pre/post digitalisation comparison
     print("=" * 60)
