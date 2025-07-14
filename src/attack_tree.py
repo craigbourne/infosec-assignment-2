@@ -148,9 +148,9 @@ class AttackTree:
             print("✗ No graph loaded. Load and build a graph first.")
             return
 
-        print("="*60)
+        print("=" * 60)
         print("RISK VALUE INPUT")
-        print("="*60)
+        print("=" * 60)
         print("Enter the cost impact (in £) if each attack succeeds:")
         print("(Press Enter to skip, or enter 0 for no impact)")
         print()
@@ -196,11 +196,11 @@ class AttackTree:
         root_node = root_nodes[0]
         total_risk = self._calculate_node_risk(root_node)
 
-        print(f"\n" + "="*60)
+        print(f"\n" + "=" * 60)
         print(f"RISK ASSESSMENT SUMMARY")
-        print(f"="*60)
+        print(f"=" * 60)
         print(f"Total Business Risk Exposure: £{total_risk:,.2f}")
-        print(f"="*60)
+        print(f"=" * 60)
         
         return total_risk
 
@@ -269,37 +269,139 @@ if __name__ == "__main__":
     # Create attack tree instance
     tree = AttackTree()
     
-    # Allow user to choose which attack tree to analyse
-    print("="*60)
-    print("PAMPERED PETS ATTACK TREE ANALYSER")
-    print("="*60)
-    print("Choose an attack tree to analyse:")
-    print("1. Payment System Attack")
-    print("2. Supply Chain Attack")
-    print("="*60)
+    # Enhanced menu for pre/post digitalisation comparison
+    print("=" * 60)
+    print("PAMPERED PETS RISK ASSESSMENT TOOL")
+    print("=" * 60)
+    print("Compare risks before and after digitalisation:")
+    print()
+    print("CURRENT BUSINESS (Pre-Digitalisation):")
+    print("1. Payment System Risks (Current)")
+    print("2. Supply Chain Risks (Current)")
+    print()
+    print("AFTER DIGITALISATION (Post-Implementation):")
+    print("3. Payment System Risks (Digitalised)")
+    print("4. Supply Chain Risks (Digitalised)")
+    print()
+    print("COMPARISON MODES:")
+    print("5. Compare Payment Systems (Current vs Digitalised)")
+    print("6. Compare Supply Chains (Current vs Digitalised)")
+    print("=" * 60)
+    
+    # File mapping for menu choices
+    attack_trees = {
+        "1": ("data/attack_trees/payment_system_current.json", "Payment System (Current)"),
+        "2": ("data/attack_trees/supply_chain_current.json", "Supply Chain (Current)"),
+        "3": ("data/attack_trees/payment_system_digitalised.json", "Payment System (Digitalised)"),
+        "4": ("data/attack_trees/supply_chain_digitalised.json", "Supply Chain (Digitalised)")
+    }
     
     while True:
-        choice = input("Enter choice (1 or 2): ").strip()
-        if choice == "1":
-            file_path = 'data/attack_trees/payment_system.json'
+        choice = input("Enter choice (1-6): ").strip()
+        
+        if choice in ["1", "2", "3", "4"]:
+            # Single analysis
+            file_path, description = attack_trees[choice]
+            print(f"\nAnalysing: {description}")
+            print("-" * 60)
+            
+            if tree.load_from_json(file_path):
+                tree.build_graph()
+                tree.input_values_interactive()
+                tree.get_risk_breakdown()
+                overall_risk = tree.calculate_risk()
+                print(f"\nDisplaying {description} with risk values...")
+                tree.visualise(show_values=True)
             break
-        elif choice == "2":
-            file_path = 'data/attack_trees/supply_chain.json'
+            
+        elif choice == "5":
+            # Compare payment systems
+            print(f"\nCOMPARISON MODE: Payment Systems")
+            print("=" * 60)
+            print("You'll analyse both current and digitalised payment systems")
+            print("This helps compare risks before and after transformation")
+            print()
+            
+            results = {}
+            for scenario, (file_path, description) in [
+                ("current", attack_trees["1"]),
+                ("digitalised", attack_trees["3"])
+            ]:
+                print(f"\n>>> ANALYSING: {description.upper()} <<<")
+                tree_instance = AttackTree()
+                if tree_instance.load_from_json(file_path):
+                    tree_instance.build_graph()
+                    tree_instance.input_values_interactive()
+                    risk = tree_instance.calculate_risk()
+                    results[scenario] = {"risk": risk, "tree": tree_instance, "description": description}
+            
+            # Show comparison summary
+            print(f"\n" + "=" * 60)
+            print("PAYMENT SYSTEM RISK COMPARISON SUMMARY")
+            print("=" * 60)
+            if "current" in results and "digitalised" in results:
+                current_risk = results["current"]["risk"]
+                digital_risk = results["digitalised"]["risk"]
+                difference = digital_risk - current_risk
+                
+                print(f"Current System Risk:      £{current_risk:,.2f}")
+                print(f"Digitalised System Risk:  £{digital_risk:,.2f}")
+                print(f"Risk Change:              £{difference:,.2f}")
+                
+                if difference > 0:
+                    print(f"📈 Digitalisation INCREASES risk by £{difference:,.2f}")
+                elif difference < 0:
+                    print(f"📉 Digitalisation REDUCES risk by £{abs(difference):,.2f}")
+                else:
+                    print("⚖️  Risk remains the same")
+                
+                print("\nRecommendation based on your Assignment 1 analysis:")
+                print("Proceed with digitalisation but implement security controls")
             break
+            
+        elif choice == "6":
+            # Compare supply chains  
+            print(f"\nCOMPARISON MODE: Supply Chains")
+            print("=" * 60)
+            print("You'll analyse both current and digitalised supply chain risks")
+            print()
+            
+            results = {}
+            for scenario, (file_path, description) in [
+                ("current", attack_trees["2"]),
+                ("digitalised", attack_trees["4"])
+            ]:
+                print(f"\n>>> ANALYSING: {description.upper()} <<<")
+                tree_instance = AttackTree()
+                if tree_instance.load_from_json(file_path):
+                    tree_instance.build_graph()
+                    tree_instance.input_values_interactive()
+                    risk = tree_instance.calculate_risk()
+                    results[scenario] = {"risk": risk, "tree": tree_instance, "description": description}
+            
+            # Show comparison summary
+            print(f"\n" + "=" * 60)
+            print("SUPPLY CHAIN RISK COMPARISON SUMMARY")
+            print("=" * 60)
+            if "current" in results and "digitalised" in results:
+                current_risk = results["current"]["risk"]
+                digital_risk = results["digitalised"]["risk"]
+                difference = digital_risk - current_risk
+                
+                print(f"Current Supply Chain Risk:      £{current_risk:,.2f}")
+                print(f"Digitalised Supply Chain Risk:  £{digital_risk:,.2f}")
+                print(f"Risk Change:                    £{difference:,.2f}")
+                
+                if difference > 0:
+                    print(f"📈 Digitalisation INCREASES risk by £{difference:,.2f}")
+                elif difference < 0:
+                    print(f"📉 Digitalisation REDUCES risk by £{abs(difference):,.2f}")
+                else:
+                    print("⚖️  Risk remains the same")
+                
+                print("\nRecommendation based on your Assignment 1 analysis:")
+                print("Maintain local suppliers - reject international cost savings")
+            break
+            
         else:
-            print("Please enter 1 or 2")
-    
-    # Load and analyse the chosen attack tree
-    if tree.load_from_json(file_path):
-        tree.build_graph()
-        
-        # Ask for input first
-        tree.input_values_interactive()
-        
-        # Calculate and show risk assessment
-        tree.get_risk_breakdown()
-        overall_risk = tree.calculate_risk()
-        
-        # Show the final visual result
-        print("\nDisplaying attack tree with risk values...")
-        tree.visualise(show_values=True)
+            print("Please enter a number between 1-6")

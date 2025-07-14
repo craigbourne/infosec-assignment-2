@@ -1,0 +1,49 @@
+{
+  "name": "Supply Chain Attack (Post-Digitalisation - Local Focus)",
+  "description": "Supply chain risks after digitalisation while maintaining local supplier relationships",
+  "root": {
+    "id": "root",
+    "name": "Compromise Digital Supply Chain",
+    "type": "OR",
+    "children": [
+      {
+        "id": "digital_supplier_integration",
+        "name": "Digital Supplier Integration Risks",
+        "type": "OR",
+        "children": [
+          {
+            "id": "supplier_system_breach",
+            "name": "Local Supplier System Breach",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "supply_chain_software_attack",
+            "name": "Supply Chain Management Software Attack",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "id": "maintained_local_advantages",
+        "name": "Local Supply Chain (Lower Risk)",
+        "type": "OR",
+        "children": [
+          {
+            "id": "local_transport_risk",
+            "name": "Local Transport Disruption",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "quality_monitoring_failure",
+            "name": "Digital Quality Monitoring Failure",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      }
+    ]
+  }
+}

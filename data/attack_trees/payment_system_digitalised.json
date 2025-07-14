@@ -1,0 +1,74 @@
+{
+  "name": "Payment System Attack (Post-Digitalisation)",
+  "description": "Payment system risks after implementing digital transformation with security improvements",
+  "root": {
+    "id": "root",
+    "name": "Compromise Digital Payment System",
+    "type": "OR",
+    "children": [
+      {
+        "id": "ecommerce_attack",
+        "name": "E-commerce Platform Attack",
+        "type": "OR",
+        "children": [
+          {
+            "id": "web_app_vuln",
+            "name": "Web Application Vulnerabilities",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "payment_gateway_attack",
+            "name": "Payment Gateway Compromise",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "customer_data_breach",
+            "name": "Customer Database Breach",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "id": "improved_pos_attack",
+        "name": "POS System Attack (Secured)",
+        "type": "AND",
+        "children": [
+          {
+            "id": "bypass_mfa",
+            "name": "Bypass Multi-Factor Authentication",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "breach_network_segmentation",
+            "name": "Breach Network Segmentation",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "id": "cloud_infrastructure",
+        "name": "Cloud Infrastructure Attack",
+        "type": "OR",
+        "children": [
+          {
+            "id": "cloud_misconfiguration",
+            "name": "Cloud Service Misconfiguration",
+            "type": "leaf",
+            "value": 0
+          },
+          {
+            "id": "api_attack",
+            "name": "API Security Breach",
+            "type": "leaf",
+            "value": 0
+          }
+        ]
+      }
+    ]
+  }
+}
