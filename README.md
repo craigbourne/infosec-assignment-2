@@ -1,4 +1,5 @@
 # Attack Tree Visualiser
+GitHub Repo: [https://github.com/craigbourne/infosec-assignment-2](https://github.com/craigbourne/infosec-assignment-2)
 
 > Visual risk assessment tool for business decision-making
 
@@ -200,9 +201,9 @@ Testing confirms correct implementation:
 ## References
 Fowler, B. (2023) *Information Assurance and Risk Management Strategies*. New York: Apress.
 
-Hubbard, D. (2020) *The Failure of Risk Management: Why It's Broken and How to Fix It*. John Wiley & Sons.
+Hubbard, D. (2020) *The Failure of Risk Management: Why It's Broken and How to Fix It*. Hoboken: John Wiley & Sons.
 
-Kovaitė, K. & Stankevičienė, J. (2019) 'Risks of digitalisation of business models', *Contemporary Issues in Business, Management and Economics Engineering*, pp. 380-387.
+Kovaitė, K. & Stankevičienė, J. (2019) Risks of digitalisation of business models. Proceedings of 6th International Scientific Conference Contemporary Issues in Business, Management and Economics Engineering 2019. DOI: 10.3846/cibmee.2019.039
 
 Luo, Y. (2021) 'A general framework of digitization risks in international business', *Journal of International Business Studies*, 53(2), pp. 344-361.
 
@@ -216,8 +217,9 @@ Sørensen, B.T. (2018) 'Digitalisation: An Opportunity or a Risk?', *Journal of 
 
 Spring, J.M., Hatleback, E., Householder, A.D., Manion, A. & Shick, D. (2021) 'Time to Change the CVSS?', *IEEE Security & Privacy*, 19(2), pp. 74-78.
 
-Tarandach, I. & Coles, M. (2020) *Threat Modeling: A Practical Guide for Development Teams*. O'Reilly Media.
+Tarandach, I. & Coles, M. (2020) *Threat Modeling: A Practical Guide for Development Teams*. Sebastopol: O'Reilly Media.
 
-Threat Modeling Manifesto Working Group (2020) *Threat Modeling Manifesto*. Available at: https://www.threatmodelingmanifesto.org
+Threat Modeling Manifesto Working Group (2020) *Threat Modeling Manifesto*. Available at: https://www.threatmodelingmanifesto.org (Accessed: 14 July 2025).
 
-Wang, J., Neil, M. and Fenton, N. (2020) 'A Bayesian network approach for cybersecurity risk assessment implementing and extending the FAIR model', Computers & Security, 89, p. 101659.
+
+Wang, J., Neil, M. & Fenton, N. (2020) 'A Bayesian network approach for cybersecurity risk assessment implementing and extending the FAIR model', *Computers & Security*, 89, pp. 101659.
