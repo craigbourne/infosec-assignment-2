@@ -131,4 +131,93 @@ The application implements attack tree logic following Tarandach & Coles (2020):
 This methodology addresses the "Risk = Threat Capability × Vulnerability × Impact" framework established in FAIR model literature, focusing on impact assessment with transparent logical aggregation.
 
 ## File Structure
-![File Structure](images/file-structure.jpg)
+![File Structure](images/5-file-structure.jpg)
+
+## Assignment 1 Validation and Business Impact
+The application validates the three critical business questions from Assignment 1. It shows that the original selective digitalisation approach is financially justified whilst giving the shop manager the clear, visual risk information they require.
+
+**Methodology**: The application employs attack tree analysis with OR/AND gate logic to convert security threats into monetary impact assessments, enabling comparison of digitalisation scenarios. This approach addresses the limitations of traditional risk assessment methods identified by Hubbard (2020) and Spring et al. (2021), replacing subjective "high, medium, low" ratings with transparent, business-focused risk calculations.
+
+**Q1: Could online presence grow the business by 50%?** 
+Digitalisation introduces risks, including malware attacks and payment fraud. However, implementing security controls (WPA3 encryption, role-based access, daily backups) mitigates these risks whilst preserving growth opportunities. Following Fowler's (2023) framework for developing effective risk analysis validates the Assignment 1 recommendation to pursue selective digitalisation with appropriate security investment.
+
+**Q2: Could international supply chain changes reduce costs by 24%?** 
+The supply chain comparison provides clear evidence for why the international option is less desirable. Using Kovaitė & Stankevičienė's (2019) RADi framework for digitalisation risks alongside Luo's (2021) framework for international business digitisation, the analysis quantifies how quality control loss,regulatory complexity and expanded attack surfaces create costs that exceed the 24% savings. This validates the Assignment 1 recommendation to maintain local supplier relationships.
+
+**Q3: Could lack of digital features result in 33% customer loss?** 
+The scenario comparison analysis (options 5 and 6) indicates that inaction poses the greatest threat to business sustainability. By comparing current operations against digitalised alternatives, the risk of losing customers by remaining offline significantly outweighs the security risks of digital transformation, provided appropriate controls are implemented. This supports the Assignment 1 recommendation for phased digital implementation, building on Sørensen's (2018) recognition that digitalisation creates "massive opportunity" when risks are properly managed.
+
+**Business Impact Summary**: 
+
+This application validates that Assignment 1's risk-based approach to digitalisation was methodologically sound and financially justified. Three key outcomes are demonstrated:
+
+**Risk Quantification**: Converting security threats into monetary impacts enables evidence-based decision-making, addressing Hubbard's (2020) critique of qualitative risk assessment methods.
+
+**Strategic Validation**: The selective digitalisation approach balances growth opportunities against security investments, with local supply chain advantages outweighing international cost saving benefits.
+
+**Practical Implementation**: Security risks can be managed and mitigated through appropriate controls whilst business transformation proceeds, providing the "unconventional executive summary" that bridges technical assessment and business strategy.
+
+The application successfully transforms complex information security analysis into business intelligence, enabling informed strategic decisions for small enterprises navigating digital transformation challenges.
+
+## Testing and Validation
+**Running Tests**
+```bash
+python tests/test_calculations.py
+```
+
+The test suite validates core attack tree calculation logic:
+
+![Tests output](images/6-tests.jpg)
+
+
+**Code Quality Assessment**
+The application underwent systematic code quality improvement using pylint analysis:
+
+**Pre-Remediation Results**
+- Various style and structural issues identified
+- Inconsistent naming conventions
+- Code complexity concerns
+
+![Pylint before remediation](images/7-pylint-before.jpg)
+
+**Post-Remediation Results**
+- Achieved professional standards with **10.00/10.00 pylint score**
+- Comprehensive docstring documentation
+- Consistent PEP 8 compliance
+- Modular, maintainable code structure
+
+![Pylint after remediation](images/8-pylint-after.jpg)
+
+**Validation Results**
+Testing confirms correct implementation:
+- **OR gate logic**: ✓ Correctly implements maximum risk selection reflecting attacker behaviour (choosing easiest path)
+- **AND gate logic**: ✓ Accurately sums cumulative risks for sequential attack requirements (all steps must succeed)
+- **Graph structure**: ✓ Maintains hierarchical relationships ensuring logical attack tree progression
+- **Risk calculations**: ✓ Produces consistent, reproducible results supporting business decision-making
+- **JSON loading**: ✓ Handles all four attack tree scenarios without errors
+- **User input validation**: ✓ Handles edge cases including invalid inputs and empty values
+
+## References
+Fowler, B. (2023) *Information Assurance and Risk Management Strategies*. New York: Apress.
+
+Hubbard, D. (2020) *The Failure of Risk Management: Why It's Broken and How to Fix It*. John Wiley & Sons.
+
+Kovaitė, K. & Stankevičienė, J. (2019) 'Risks of digitalisation of business models', *Contemporary Issues in Business, Management and Economics Engineering*, pp. 380-387.
+
+Luo, Y. (2021) 'A general framework of digitization risks in international business', *Journal of International Business Studies*, 53(2), pp. 344-361.
+
+Matplotlib Development Team, Hunter, J., Dale, D., Firing, E., & Droettboom, M. (2024) *Matplotlib: Visualization with Python*. Available at: https://matplotlib.org/ (Accessed: 17 July 2025).
+
+NetworkX Developers (2024) *NetworkX: Network Analysis in Python*. Available at: https://networkx.org/ (Accessed: 17 July 2025).
+
+NumPy Developers (2024) *NumPy: The fundamental package for scientific computing with Python*. Available at: https://numpy.org/ (Accessed: 17 July 2025).
+
+Sørensen, B.T. (2018) 'Digitalisation: An Opportunity or a Risk?', *Journal of European Competition Law & Practice*, 9(6), pp. 349-350.
+
+Spring, J.M., Hatleback, E., Householder, A.D., Manion, A. & Shick, D. (2021) 'Time to Change the CVSS?', *IEEE Security & Privacy*, 19(2), pp. 74-78.
+
+Tarandach, I. & Coles, M. (2020) *Threat Modeling: A Practical Guide for Development Teams*. O'Reilly Media.
+
+Threat Modeling Manifesto Working Group (2020) *Threat Modeling Manifesto*. Available at: https://www.threatmodelingmanifesto.org
+
+Wang, J., Neil, M. and Fenton, N. (2020) 'A Bayesian network approach for cybersecurity risk assessment implementing and extending the FAIR model', Computers & Security, 89, p. 101659.
